@@ -1,0 +1,239 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <LINK REL="stylesheet" TYPE="text/css" HREF="starwars.css">
+    <style type="text/css">
+        body {
+              background-image:url(images/fond.jpeg);
+              font-family: 'arial',;
+              color: red;
+          }
+        div {
+            
+            display: inline-block;
+            padding: 5px;
+            margin: 0px;
+            font-size: 1.5em;
+        }
+        
+        h1 {
+          font-size: 100;
+          font-weight: 900;
+          font-family: 'arial';
+          text-align: center;
+        }
+
+        }
+    </style>
+</head>
+
+<body>
+  <h1>Star Wars </h1>
+
+    <div id="root"></div>
+
+    <script type="text/javascript" src="../react/react.js"></script>
+    <script type="text/javascript" src="../react/JSXTransformer.js"></script>
+    <script type="text/javascript">
+    var compteur = 1;
+  
+  var pers = [ {
+  'author': 'Senator palpatine',
+  'quote': 'The Dark Side of the Force is the pathway to many abilities some consider to be.. Unnatural.',
+  'quote1': 'The Dark Side of the Force is the pathway to many abilities some consider to be.. Unnatural.',
+  'quote2': 'The Dark Side of the Force is the pathway to many abilities some consider to be.. Unnatural.',
+  'quote3': 'The Dark Side of the Force is the pathway to many abilities some consider to be.. Unnatural.',
+  'image': 'images/palp.jpg'
+},  {
+  'author': 'Darth vader',
+  'quote': 'Luke, you can destroy the Emperor. He has foreseen this. It is your destiny. Join me, and together we can rule the galaxy as father and son.',
+  'quote1': 'The Force is strong with this one.',
+  'quote2': 'The Force is strong with this one.',
+  'quote3': 'The Force is strong with this one.',
+  'image': 'images/vador.jpg'
+}, {
+  'author': 'Princess leia',
+  'quote': 'Aren\'t you a little short for a storm trooper?',
+  'quote1': 'Aren\'t you a little short for a storm trooper?',
+  'quote2': 'Aren\'t you a little short for a storm trooper?',
+  'quote3': 'Aren\'t you a little short for a storm trooper?',
+  'image': 'images/leia.jpg'
+}, {
+  'author': 'Count Dooku',
+  'quote': 'I sense great fear in you, Skywalker. You have hate... you have anger... but you don’t use them.',
+  'quote1': 'I sense great fear in you, Skywalker. You have hate... you have anger... but you don’t use them.',
+  'quote2': 'I sense great fear in you, Skywalker. You have hate... you have anger... but you don’t use them.',
+  'quote3': 'I sense great fear in you, Skywalker. You have hate... you have anger... but you don’t use them.',
+  'image': 'images/doku.jpg'
+},{
+  'author': 'Qui-Gon Jinn',
+  'quote': 'Your focus determines your reality',
+  'quote1': 'Your focus determines your reality',
+  'quote2': 'Your focus determines your reality',
+  'quote3': 'Your focus determines your reality',
+  'image': 'images/qui.jpg'
+} , {
+  'author': 'Obi-Wan-Kenobi',
+  'quote': 'In my experience there is no such thing as luck.',
+  'quote1': 'In my experience there is no such thing as luck.',
+  'quote2': 'In my experience there is no such thing as luck.',
+  'quote3': 'In my experience there is no such thing as luck.',
+  'image': 'images/obi.jpg'
+}, {
+  'author': 'Yoda',
+  'quote': 'If once you start down the dark side, forever will it dominate your destiney, consume you it will, as it did Obi-Wan\'s apprentice',
+  'quote1': 'Do. Or do not. There is no try.',
+  'quote2': 'Mmm. Lost a planet, Master Obi-Wan has. How embarrassing.',
+  'quote3': 'When 900 years old, you reach… Look as good, you will not.',
+  'image': 'images/yoda.jpg'
+  }];
+
+
+    </script>
+    <script type="text/jsx">
+
+
+var Random = React.createClass({
+
+        generateRandom: function(){
+          var alea = Math.floor(Math.random() * 11);
+          this.setState({
+            random_author: pers[alea].author, 
+            random_quote: pers[alea].quote
+          });
+        },
+        getInitialState: function(){
+           return {
+             random: '',
+             random_quote: ''
+           }
+        },
+        render: function(){
+          return (
+            <div>
+            <div></div>
+              <button type="button" onClick={this.generateRandom}>Générer une phrase aleatoire</button>
+              <h3>{this.state.random_author} : {this.state.random_quote} </h3>
+            </div>
+          );
+        }
+      });
+
+
+
+
+    var Stockage = {
+        tab : [],
+        whenItemSelected : function (callback) {
+            this.tab.push(callback);
+        },
+        handleSelectAction : function(part) 
+        {
+            this.tab.forEach(function(callback) {
+            callback(part.letter);
+            });
+        }
+    };
+    var Hand = {
+        select : function (cit) {
+            Stockage.handleSelectAction({letter : cit})
+        }
+    };
+
+  // Affichage des photo de personnages
+    var Affich_perso = React.createClass({
+
+        render : function () {
+
+            return (<div>
+                {
+                  pers.map(function(test) {
+                    return <Photo itemValue={test} />;
+                })}
+            </div>);
+        },
+
+    });
+    var Tree =  React.createClass({
+        render : function () {
+            return (<div><Affich_perso /><Phrase /><Random/></div>);
+        },
+    });
+
+    var Photo = React.createClass({
+
+        render : function () {
+            var classname = this.state.selected ? 'selected' : '';
+            return (<div className={classname} onClick={this.handleClick}><img src={this.props.itemValue.image} width="175" height="175"/></div>);
+        },
+
+        getInitialState : function () {
+            return {selected : false };
+        },
+
+        componentDidMount : function() {
+            var comp = this;
+            Stockage.whenItemSelected(function(item) {
+                comp.setState({selected : item ===  comp.props.itemValue});
+            })
+        },
+
+        handleClick : function () {
+        Hand.select(this.props.itemValue);
+
+        }
+    });
+
+    //Affichage des phrases
+  var Phrase = React.createClass({
+
+        render : function () {
+          if(compteur == 1)
+          { compteur = compteur + 1;
+           return (<div> {this.state.letter.author} said: {this.state.letter.quote}</div>);
+          }
+
+          if(compteur == 2)
+          { compteur = compteur + 1; 
+            return (<div>  {this.state.letter.author} said: {this.state.letter.quote1}</div>); }
+          if(compteur == 3)
+          {
+            compteur = compteur + 1;
+            return (<div> {this.state.letter.author} said: {this.state.letter.quote2}</div>);
+          }
+          if(compteur == 4)
+          {
+            compteur = compteur +1;
+            return (<div> {this.state.letter.author} said: {this.state.letter.quote3} </div>);
+          }
+          else {
+            {
+              compteur = 1;
+              return (<div> {this.state.letter.author} said: {this.state.letter.quote} </div>);
+            }
+          }
+        },
+        //reinitialisation
+        getInitialState : function () {
+            return {letter : '' };
+        },
+
+        componentDidMount : function() {
+            var comp = this;
+            Stockage.whenItemSelected(function(newletter) {
+                comp.setState({letter : newletter});
+            })
+        },
+
+    });
+    React.render(<Tree/>, document.getElementById('root'));
+
+
+
+
+    </script>
+
+
+
+</body>
+</html>
